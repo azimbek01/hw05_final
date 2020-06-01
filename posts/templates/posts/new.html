@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %} 
+    {% if post %}Редактирование поста{% else %}Создание нового поста{% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <div class='row justify-content-center'>
+        <div class='col-md-8 p-5'>
+            <div class='card'>
+
+                {% if post %}
+                    <div class='card-header'>Редактировать запись</div>
+                {% else %}
+                    <div class='card-header'>Добавить запись</div>
+                {% endif %}
+
+                <div class='card-body'>
+                    <div class='form-group row'>
+                        <form method='post' action='' enctype='multipart/form-data'>
+                            
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            {% if post %}                            
+                                <input type='submit' value='Сохранить'/>
+                            {% else %}
+                                <input type='submit' value='Добавить'/>
+                            {% endif %}
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
