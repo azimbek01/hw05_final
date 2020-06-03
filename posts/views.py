@@ -20,7 +20,7 @@ def index(request):
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts_list = group.group_posts.order_by('-pub_date').all()
+    posts_list = group.group_posts.order_by('-pub_date')
     paginator = Paginator(posts_list, 10)
 
     page_number = request.GET.get('page')
@@ -32,15 +32,14 @@ def group_posts(request, slug):
 @login_required
 def new_post(request):
     if request.method == 'POST':
-        form_new_post = PostForm(request.POST, files=request.FILES or None)
-        if form_new_post.is_valid():
-            form = form_new_post.save(commit=False)
-            form.author_id = request.user.pk
-            form.save()
+        form = PostForm(request.POST, files=request.FILES or None)
+        if form.is_valid():
+            form_new = form.save(commit=False)
+            form_new.author_id = request.user.pk
+            form_new.save()
             return redirect('index')
-        return render(request, 'posts/new.html', {'form': form_new_post})
-
-    form = PostForm()
+    else:
+        form = PostForm()
     return render(request, 'posts/new.html', {'form': form})
 
 
@@ -88,21 +87,16 @@ def post_edit(request, username, post_id):
         return redirect('post', username=username, post_id=post_id)
 
     if request.method == 'POST':
-        form_edit_post = PostForm(request.POST,
-                                  files=request.FILES or None)
-        if form_edit_post.is_valid():
-            post.text = form_edit_post.cleaned_data['text']
-            post.group_posts = form_edit_post.cleaned_data['group']
-            post.image = form_edit_post.cleaned_data['image']
+        form = PostForm(request.POST, files=request.FILES or None)
+        if form.is_valid():
+            post.text = form.cleaned_data['text']
+            post.group_posts = form.cleaned_data['group']
+            post.image = form.cleaned_data['image']
             post.save()
             return redirect('post', username=username, post_id=post_id)
-        else:
-            return render(request, 'posts/new.html',
-                          {'form': form_edit_post, 'post': post})
-
-    form = PostForm(instance=post)
-    return render(request, 'posts/new.html',
-                  {'form': form, 'post': post})
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'posts/new.html', {'form': form, 'post': post})
 
 
 def page_not_found(request, exception):
@@ -123,19 +117,15 @@ def add_comment(request, username, post_id):
             form.author_id = request.user.pk
             form.post_id = post_id
             form.save()
-            return redirect('post', username=username, post_id=post_id)
-        else:
-            return redirect('post', username=username, post_id=post_id)
-
     return redirect('post', username=username, post_id=post_id)
 
 
 @login_required
 def follow_index(request):
-    follow = Follow.objects.filter(user=request.user).all()
+    follow = Follow.objects.filter(user=request.user)
     authors = (i.author for i in follow)
     posts_list = Post.objects.filter(
-        author__in=authors).order_by('-pub_date').all()
+        author__in=authors).order_by('-pub_date')
     paginator = Paginator(posts_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
