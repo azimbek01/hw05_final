@@ -83,18 +83,17 @@ def post_view(request, username, post_id):
 @login_required
 def post_edit(request, username, post_id):
     post = get_object_or_404(Post, id=post_id)
-    if request.user != post.author:
-        return redirect('post', username=username, post_id=post_id)
-
-    if request.method == 'POST':
-        form = PostForm(request.POST, files=request.FILES or None, 
-                        instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('post', username=username, post_id=post_id)
-    else:
-        form = PostForm(instance=post)
-    return render(request, 'posts/new.html', {'form': form, 'post': post})
+    if request.user == post.author:
+        if request.method == 'POST':
+            form = PostForm(request.POST, files=request.FILES or None,
+                            instance=post)
+            if form.is_valid():
+                form.save()
+                return redirect('post', username=username, post_id=post_id)
+        else:
+            form = PostForm(instance=post)
+        return render(request, 'posts/new.html', {'form': form, 'post': post})
+    return redirect('post', username=username, post_id=post_id)
 
 
 def page_not_found(request, exception):

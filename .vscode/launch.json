@@ -4,27 +4,27 @@
     // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "Django TEST",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "test",
-                "posts",
-            ],
-            "django": true
-        }
         // {
-        //     "name": "Python: Django",
+        //     "name": "Django TEST",
         //     "type": "python",
         //     "request": "launch",
-        //     "program": "${workspaceFolder}\\manage.py",
+        //     "program": "${workspaceFolder}/manage.py",
         //     "args": [
-        //         "runserver",
-        //         "--noreload"
+        //         "test",
+        //         "posts",
         //     ],
         //     "django": true
         // }
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}\\manage.py",
+            "args": [
+                "runserver",
+                "--noreload"
+            ],
+            "django": true
+        }
     ]
 }
