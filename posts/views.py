@@ -87,12 +87,10 @@ def post_edit(request, username, post_id):
         return redirect('post', username=username, post_id=post_id)
 
     if request.method == 'POST':
-        form = PostForm(request.POST, files=request.FILES or None)
+        form = PostForm(request.POST, files=request.FILES or None, 
+                        instance=post)
         if form.is_valid():
-            post.text = form.cleaned_data['text']
-            post.group_posts = form.cleaned_data['group']
-            post.image = form.cleaned_data['image']
-            post.save()
+            form.save()
             return redirect('post', username=username, post_id=post_id)
     else:
         form = PostForm(instance=post)
